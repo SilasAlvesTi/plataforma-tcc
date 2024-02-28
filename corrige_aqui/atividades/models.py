@@ -1,3 +1,6 @@
 from django.db import models
+import jsonfield
 
-# Create your models here.
+class Questao(models.Model):
+    enunciado = models.TextField()
+    casos_de_teste = jsonfield.JSONField(default=dict)
