@@ -14,7 +14,7 @@ def criar_arquivo_de_testes(linguagem, titulo, caso_de_teste):
     
     test_template = """def test_case_{index}():
     input_data = "{input_data}"
-    expected_result = {expected_result}
+    expected_result = "{expected_result}"
     cast_type = type(expected_result)
 
     result = subprocess.run(
@@ -35,19 +35,19 @@ def criar_arquivo_de_testes(linguagem, titulo, caso_de_teste):
         test_code += test_template.format(index=index, input_data=input_data, expected_result=expected_result)
 
     
-    with open("./corrige_aqui/arquivos-para-github/tmp/test_file.py", "w") as file:
+    with open("./arquivos-para-github/tmp/test_file.py", "w") as file:
         file.write("import subprocess\n\n")
         file.write(test_code)
 
 def criar_repositorio(linguagem):
-    path_linguagem = "./corrige_aqui/arquivos-para-github/" + linguagem
-    path_temp = "./corrige_aqui/arquivos-para-github/tmp"
-    path_create_repo = "./corrige_aqui/arquivos-para-github/criar-repositorio-python.py"
+    path_linguagem = "./arquivos-para-github/" + linguagem
+    path_temp = "./arquivos-para-github/tmp"
+    path_create_repo = "./arquivos-para-github/criar-repositorio-python.py"
     
     shutil.copytree(path_linguagem, path_temp, dirs_exist_ok = True)
     shutil.copy(path_create_repo, path_temp + "/criar-repositorio-python.py")
 
-    os.system("python ./corrige_aqui/arquivos-para-github/criar-repositorio-python.py")
+    os.system("python ./arquivos-para-github/criar-repositorio-python.py")
 
 
 def adicionar_atividade(request):

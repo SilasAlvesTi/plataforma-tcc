@@ -1,4 +1,5 @@
 import os, subprocess, datetime
+import shutil
 import requests
 
 repo_name = "primeiro-repositorio-" + str(datetime.datetime.now().strftime('%d-%m-%y-%H-%M-%S.%f'))
@@ -20,7 +21,7 @@ headers = {
 
 #response = requests.post(url, headers=headers, json=data)
 
-script_name="./corrige_aqui/arquivos-para-github/tmp/create-repository.sh"
+script_name="./arquivos-para-github/tmp/create-repository.sh"
 script_content = f"""#!/bin/bash
 
 GITHUB_USERNAME="SilasTests"
@@ -44,8 +45,8 @@ os.chmod(script_name, 0o755)
 
 #subprocess.call([f"./{script_name}"])
 
-"""shutil.rmtree("./corrige_aqui/arquivos-para-github/tmp/")
-os.mkdir("./corrige_aqui/arquivos-para-github/tmp") """
+shutil.rmtree(".arquivos-para-github/tmp/")
+os.mkdir(".arquivos-para-github/tmp")
 
 """ if response.status_code == 201:
     print(f"Repositório '{repo_name}' criado com sucesso!")
