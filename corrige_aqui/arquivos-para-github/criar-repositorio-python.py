@@ -19,9 +19,9 @@ headers = {
     "Authorization": f"Bearer {github_token}"
 }
 
-#response = requests.post(url, headers=headers, json=data)
+response = requests.post(url, headers=headers, json=data)
 
-script_name="./arquivos-para-github/tmp/create-repository.sh"
+script_name="arquivos-para-github/tmp/create-repository.sh"
 script_content = f"""#!/bin/bash
 
 GITHUB_USERNAME="SilasTests"
@@ -36,17 +36,27 @@ git commit -m "Primeiro commit"
 
 git remote add atividade https://$GITHUB_USERNAME:$TOKEN@github.com/$GITHUB_USERNAME/$REPO_NAME.git
 
-git push -u atividade main"""
+git push -u atividade main
+push_result=$?
+if [ "$push_result" -eq 0 ]; then
+  rm -Rf .git
+  rm -Rf .github
+  rm -Rf *
+else
+  echo "Falha ao enviar para o GitHub. Pasta não apagada."
+fi
+"""
 
 with open(script_name, 'w') as writer:
     writer.write(script_content)
 
 os.chmod(script_name, 0o755)
 
-#subprocess.call([f"./{script_name}"])
+os.chdir("./arquivos-para-github/tmp/")
+subprocess.call([f"./create-repository.sh"])
 
-shutil.rmtree(".arquivos-para-github/tmp/")
-os.mkdir(".arquivos-para-github/tmp")
+""" shutil.rmtree(".")
+os.mkdir("tmp") """
 
 """ if response.status_code == 201:
     print(f"Repositório '{repo_name}' criado com sucesso!")
