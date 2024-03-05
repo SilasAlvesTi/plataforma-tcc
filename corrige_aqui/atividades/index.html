@@ -12,7 +12,10 @@
         <div class="modal-body">
                       
           <div id="inputContainer" class="containerPairs py-3">
-            <label for="cars">Linguagem:</label>
+            <label for="repositorio">Nome do repositório</label>
+            <input type="text" name="repositorio"></input>
+            <br>
+            <label for="linguagem">Linguagem:</label>
 
             <select name="linguagem" id="linguagem">
               <option value="c">c</option>
@@ -26,7 +29,6 @@
             <div class="d-flex justify-content-end">
               <button type="button" class="btn btn-success mt-3" id="addInput" onclick="adicionarInputGithub(this);">Adicionar casos de teste</button>
               <button type="button" class="btn btn-success mt-3" id="removeInput" onclick="removerInputGithub(this);">Remover casos de teste</button>
-              <button type="button" class="btn btn-success mt-3" data-dismiss="modal"  aria-label="Close">Adicionar Card</button>
             </div>
         </div>
         <button type="submit">Enviar</button>

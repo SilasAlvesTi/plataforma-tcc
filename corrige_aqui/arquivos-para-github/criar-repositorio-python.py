@@ -1,8 +1,7 @@
-import os, subprocess, datetime
-import shutil
+import os, subprocess, sys, unicodedata
 import requests
 
-repo_name = "primeiro-repositorio-" + str(datetime.datetime.now().strftime('%d-%m-%y-%H-%M-%S.%f'))
+repo_name = sys.argv[1]
 commit_message = "Primeiro commit"
 branch_name = "main"
 
