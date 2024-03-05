@@ -38,6 +38,12 @@ def criar_arquivo_de_testes(linguagem, titulo, caso_de_teste):
         file.write("import subprocess\n\n")
         file.write(test_code)
 
+
+def criar_readme(enunciado):
+    with open("./arquivos-para-github/tmp/README.md", "w") as file:
+        file.write(enunciado)
+
+
 def criar_repositorio(linguagem, repositorio):
     path_linguagem = "./arquivos-para-github/" + linguagem
     path_temp = "./arquivos-para-github/tmp"
@@ -53,6 +59,8 @@ def adicionar_atividade(request):
     if request.method == 'POST':
         repositorio = request.POST['repositorio']
         titulo = request.POST['titulo']
+        enunciado = request.POST['descricao']
+        print(enunciado)
         entrada = request.POST['entrada']
         saida = request.POST['saida']
         linguagem = request.POST['linguagem']
@@ -61,10 +69,11 @@ def adicionar_atividade(request):
         repo_name = repositorio.replace(" ", "-") + "-" + str(datetime.datetime.now().strftime('%d-%m-%y-%H-%M-%S.%f'))
         repo_name = unicodedata.normalize('NFKD', repo_name).encode('ASCII', 'ignore').decode('ASCII')
 
-        Questao.objects.create(repo_name=repo_name, enunciado=titulo, casos_de_teste=casos_de_teste)
+        Questao.objects.create(repo_name=repo_name, enunciado=enunciado, titulo=titulo, casos_de_teste=casos_de_teste)
 
         
         criar_arquivo_de_testes(linguagem=linguagem, titulo=titulo, caso_de_teste=casos_de_teste)
+        criar_readme(enunciado)
         criar_repositorio(linguagem, repo_name)
 
         return redirect(settings.BASE_URL + 'atividades/') 

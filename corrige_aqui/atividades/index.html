@@ -14,17 +14,21 @@
           <div id="inputContainer" class="containerPairs py-3">
             <label for="repositorio">Nome do repositório</label>
             <input type="text" name="repositorio"></input>
-            <br>
+            
             <label for="linguagem">Linguagem:</label>
-
             <select name="linguagem" id="linguagem">
               <option value="c">c</option>
             </select> 
+            <br>
+            <label for="descricao">Descrição do problema:</label>
+            <textarea name="descricao" id="descricao" cols="30" rows="10"></textarea>
+
             <div class="form-group input-pair">
               <input type="text" id="titulo" name="titulo" df-titulo  placeholder="Título">
               <input type="text" id="entrada" name="entrada" df-entrada placeholder="Entrada">
               <input type="text" id="saida" name="saida" df-saida placeholder="Saída Esperada">
             </div>     
+
             </div> 
             <div class="d-flex justify-content-end">
               <button type="button" class="btn btn-success mt-3" id="addInput" onclick="adicionarInputGithub(this);">Adicionar casos de teste</button>
