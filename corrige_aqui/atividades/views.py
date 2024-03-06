@@ -7,12 +7,10 @@ import os, shutil, datetime, unicodedata
 def index(response):
     return render(response, "atividades/index.html", {})
 
-def criar_arquivo_de_testes(linguagem, titulo, caso_de_teste):
-    test_cases = [
-        {"input": (caso_de_teste["entrada"]), "expected_output": caso_de_teste["saida"]},
-    ]
-    
-    test_template = """def test_case_{index}():
+def criar_arquivo_de_testes(caso_de_teste):
+
+    test_template = """
+def test_case_{index}():
     input_data = "{input_data}"
     expected_result = "{expected_result}"
     cast_type = type(expected_result)
@@ -26,7 +24,7 @@ def criar_arquivo_de_testes(linguagem, titulo, caso_de_teste):
     """
 
     test_code = ""
-    for index, test_data in enumerate(test_cases):
+    for index, test_data in enumerate(caso_de_teste):
         input_data_tuple = test_data["input"]
         list_of_strings = [str(value) for value in input_data_tuple]
         input_data = "".join(list_of_strings)
@@ -58,21 +56,25 @@ def criar_repositorio(linguagem, repositorio):
 def adicionar_atividade(request):
     if request.method == 'POST':
         repositorio = request.POST['repositorio']
-        titulo = request.POST['titulo']
         enunciado = request.POST['descricao']
-        print(enunciado)
-        entrada = request.POST['entrada']
-        saida = request.POST['saida']
         linguagem = request.POST['linguagem']
 
-        casos_de_teste = {"entrada": entrada, "saida": saida}
+        titulos = (request.POST.getlist('titulo'))
+        entradas = (request.POST.getlist('entrada'))
+        saidas = (request.POST.getlist('saida'))
+        casos_de_teste = []
+        for i in range(0, len(titulos)):
+            teste = {"titulo": titulos[i], "input": entradas[i], "expected_output": saidas[i]}
+            casos_de_teste.append(teste)
+
+
         repo_name = repositorio.replace(" ", "-") + "-" + str(datetime.datetime.now().strftime('%d-%m-%y-%H-%M-%S.%f'))
         repo_name = unicodedata.normalize('NFKD', repo_name).encode('ASCII', 'ignore').decode('ASCII')
 
-        Questao.objects.create(repo_name=repo_name, enunciado=enunciado, titulo=titulo, casos_de_teste=casos_de_teste)
+        Questao.objects.create(repo_name=repo_name, enunciado=enunciado, titulo="titulo", casos_de_teste=casos_de_teste)
 
         
-        criar_arquivo_de_testes(linguagem=linguagem, titulo=titulo, caso_de_teste=casos_de_teste)
+        criar_arquivo_de_testes(caso_de_teste=casos_de_teste)
         criar_readme(enunciado)
         criar_repositorio(linguagem, repo_name)
 

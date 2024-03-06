@@ -29,7 +29,7 @@
               <input type="text" id="saida" name="saida" df-saida placeholder="Saída Esperada">
             </div>     
 
-            </div> 
+          </div> 
             <div class="d-flex justify-content-end">
               <button type="button" class="btn btn-success mt-3" id="addInput" onclick="adicionarInputGithub(this);">Adicionar casos de teste</button>
               <button type="button" class="btn btn-success mt-3" id="removeInput" onclick="removerInputGithub(this);">Remover casos de teste</button>
@@ -39,7 +39,6 @@
     </form>
 </body>
 </html>
-<!-- 
 
 <script>
     function adicionarInputGithub(params) {
@@ -47,17 +46,16 @@
       const inputPair = document.querySelector(".input-pair");
 
       const newInputPair = inputPair.cloneNode(true);
-      newInputPair.innerHTML = `<input type="text" id="titulos${Math.random().toString(16).slice(2)} " name="titulos" df-titulo${Math.random().toString(16).slice(2)}  placeholder="Título">
+      newInputPair.innerHTML = `<input type="text" id="titulo${Math.random().toString(16).slice(2)} " name="titulo" df-titulo${Math.random().toString(16).slice(2)}  placeholder="Título">
                           <input type="text" id="entrada${Math.random().toString(16).slice(2)} " name="entrada" df-entrada${Math.random().toString(16).slice(2)} placeholder="Entrada">
                           <input type="text" id="saida${Math.random().toString(16).slice(2)} " name="saida" df-saida${Math.random().toString(16).slice(2)} placeholder="Saída Esperada">`
       
       inputContainer.appendChild(newInputPair);
-      console.log(inputContainer.childNodes.length - 2);
     
     }
 
     // TODO: acertar a lógica para deletar os valores do drawflowJson baseado nos id's dos inputs que são deletados na classe removerInputGithub()
-    function removeValoresDosTestesApagados(html) {
+    /* function removeValoresDosTestesApagados(html) {
       var htmlString = html.outerHTML
       const regex = /df-(.*?)=/g;
       const substrings = [];
@@ -82,17 +80,16 @@
         }
       })
       console.log(drawflowJson)
-    }
+    } */
     
     function removerInputGithub(params) {
       const inputContainer = document.getElementById("inputContainer");
       const inputPairs = document.querySelectorAll(".input-pair");
       
       if (inputPairs.length > 1) {
-        removeValoresDosTestesApagados(inputPairs[inputPairs.length - 1]);
+        //removeValoresDosTestesApagados(inputPairs[inputPairs.length - 1]);
         inputContainer.removeChild(inputPairs[inputPairs.length - 1]);
       }
-      console.log(inputContainer.childNodes.length - 2);
     }
     
-</script> -->
+</script> 
