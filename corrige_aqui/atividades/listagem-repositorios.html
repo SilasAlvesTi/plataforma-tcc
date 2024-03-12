@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositórios</title>
+</head>
+<body>
+    <h4>Faça um clone do repositório abaixo</h4>
+    <a href="https://github.com/SilasTests/{{repositorio.repo_name}}" target="_blank">{{repositorio.repo_name}}</a>
+    <br>
+    <br>
+    <h4>Cole a url do seu repositório.</h4>
+
+    <form method="post" action="{% url 'atividades:adicionar-repositorio' %}">
+        {% csrf_token %}   
+        <label for="repositorio">Nome do repositório</label>
+        <input type="text" name="repositorio"></input>
+        <button type="submit">Enviar</button>
+    </form>
+
+</body>
+</html>

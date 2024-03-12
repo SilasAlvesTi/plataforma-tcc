@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha o usuário</title>
+</head>
+<body>
+    <h1>Você é?</h1>
+    <form method="post" action="{% url 'plataforma:redirecionar-usuario' %}">
+        {% csrf_token %}
+        <input type="radio" id="professor" name="usuario" value="professor">
+        <label for="professor">Professor</label><br>
+        <input type="radio" id="aluno" name="usuario" value="aluno">
+        <label for="aluno">Aluno</label><br>
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>

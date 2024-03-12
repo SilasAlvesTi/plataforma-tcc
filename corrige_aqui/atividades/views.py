@@ -80,3 +80,11 @@ def adicionar_atividade(request):
 
         return redirect(settings.BASE_URL + 'atividades/') 
     return render(request, 'index.html')
+
+def mostrar_repositorios(request):
+    repositorio = Questao.objects.last()
+    return render(request, "atividades/listagem-repositorios.html", {"repositorio": repositorio})
+
+def adicionar_repositorio(request):
+    print(request.POST['repositorio'])
+    return redirect(settings.BASE_URL + 'atividades/aluno/') 
