@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
-from .models import Questao
+from .models import Aluno, AlunoTurma, Questao, Turma
 
 import os, shutil, datetime, unicodedata
 
@@ -71,7 +71,8 @@ def adicionar_atividade(request):
         repo_name = repositorio.replace(" ", "-") + "-" + str(datetime.datetime.now().strftime('%d-%m-%y-%H-%M-%S.%f'))
         repo_name = unicodedata.normalize('NFKD', repo_name).encode('ASCII', 'ignore').decode('ASCII')
 
-        Questao.objects.create(repo_name=repo_name, enunciado=enunciado, titulo="titulo", casos_de_teste=casos_de_teste)
+        turma = Turma.objects.last()
+        Questao.objects.create(repo_name=repo_name, enunciado=enunciado, titulo="titulo", casos_de_teste=casos_de_teste, turma=turma)
 
         
         criar_arquivo_de_testes(caso_de_teste=casos_de_teste)
@@ -82,9 +83,11 @@ def adicionar_atividade(request):
     return render(request, 'index.html')
 
 def mostrar_repositorios(request):
-    repositorio = Questao.objects.last()
-    return render(request, "atividades/listagem-repositorios.html", {"repositorio": repositorio})
+    repositorios = Questao.objects.all()
+    return render(request, "atividades/listagem-repositorios.html", {"repositorios": repositorios})
 
 def adicionar_repositorio(request):
-    print(request.POST['repositorio'])
+    aluno = Aluno.objects.create(repo_name=request.POST['repositorio'], nota=0)
+    turma = Turma.objects.last()
+    AlunoTurma.objects.create(turma=turma, aluno=aluno)
     return redirect(settings.BASE_URL + 'atividades/aluno/') 

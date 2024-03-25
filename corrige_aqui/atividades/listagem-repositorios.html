@@ -7,7 +7,10 @@
 </head>
 <body>
     <h4>Faça um clone do repositório abaixo</h4>
-    <a href="https://github.com/SilasTests/{{repositorio.repo_name}}" target="_blank">{{repositorio.repo_name}}</a>
+    {% for repositorio in repositorios%}
+        <a href="https://github.com/SilasTests/{{repositorio.repo_name}}" target="_blank">{{repositorio.repo_name}}</a>
+        <br>
+    {% endfor %}
     <br>
     <br>
     <h4>Cole a url do seu repositório.</h4>
