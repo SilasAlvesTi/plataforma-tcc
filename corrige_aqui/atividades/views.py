@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from .models import Aluno, AlunoTurma, Questao, Turma
 
-import os, shutil, datetime, unicodedata
+import os, shutil, datetime, unicodedata, re, base64
+import xml.etree.ElementTree as ET
+import requests
 
 def index(response):
     return render(response, "atividades/index.html", {})
@@ -91,3 +93,63 @@ def adicionar_repositorio(request):
     turma = Turma.objects.last()
     AlunoTurma.objects.create(turma=turma, aluno=aluno)
     return redirect(settings.BASE_URL + 'atividades/aluno/') 
+
+def pegar_resultados(request):
+    aluno = Aluno.objects.last()
+    repo_name = aluno.repo_name
+    repo_name = repo_name.split("github.com/", 1)[1]
+
+    response = requests.get(
+        f"https://api.github.com/repos/{repo_name}/contents/results.xml",
+    )
+
+
+    if response.status_code == 200:
+        data = response.json()
+        file_content = data['content']
+
+        file_content_encoding = data.get('encoding')
+        if file_content_encoding == 'base64':
+            file_content = base64.b64decode(file_content).decode()
+
+        padrao_falhas = r'failures=\"([^\"]*)\"'
+        padrao_testes = r'tests=\"([^\"]*)\"'
+        correspondencias_falhas = re.search(padrao_falhas, file_content)
+        correspondencias_testes = re.search(padrao_testes, file_content)
+
+        if correspondencias_falhas:
+            total_falhas = correspondencias_falhas.group(1)
+
+        if correspondencias_testes:
+            total_testes = correspondencias_testes.group(1)
+        print(f"total falhas {total_falhas}, total testes {total_testes}")
+        testes_corretos = int(total_testes) - int(total_falhas)
+        resultado = (testes_corretos / int(total_testes)) * 100
+
+        # Ler xml e pegar resultados
+        tree = ET.fromstring(file_content)
+        testsuite = tree.find("testsuite")
+
+        for testcase in testsuite.findall("testcase"):
+            if testcase.find("failure") is not None:
+                nome_caso = testcase.get("name")
+                resultado_esperado = testcase.find("failure").get("message").split("==")[1].strip()
+                resultado_esperado = resultado_esperado.split("\n")[0]
+                resultado_esperado = resultado_esperado.replace("'", "")
+                valor_passado = testcase.find("failure").get("message").split("==")[0].strip()
+                valor_passado = valor_passado.split("assert ")[1]
+                valor_passado = valor_passado.replace("'", "")
+                
+                print(f"Nome do caso: {nome_caso}")
+                print(f"Resultado esperado: {resultado_esperado}")
+                print(f"Valor passado: {valor_passado}")
+                print("-" * 40)
+
+        """ aluno.nota = resultado
+        aluno.save() """
+    else:
+        print(f"Error: {response.status_code}")
+
+    return redirect(settings.BASE_URL + 'atividades/aluno/') 
+
+  
