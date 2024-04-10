@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from .models import Aluno, AlunoTurma, Questao, Turma
 
@@ -6,8 +6,9 @@ import os, shutil, datetime, unicodedata, re, base64
 import xml.etree.ElementTree as ET
 import requests
 
-def index(response):
-    return render(response, "atividades/index.html", {})
+def index(request):
+    turma_id = request.POST.get("turma")
+    return render(request, "atividades/index.html", {"turma": turma_id[0]})
 
 def criar_arquivo_de_testes(caso_de_teste):
 
@@ -66,33 +67,49 @@ def adicionar_atividade(request):
         saidas = (request.POST.getlist('saida'))
         casos_de_teste = []
         for i in range(0, len(titulos)):
-            teste = {"titulo": titulos[i], "input": entradas[i], "expected_output": saidas[i]}
+            teste = {"titulo": titulos[i], "input": entradas[i], "expected_output": saidas[i], "nome_no_arquivo_de_teste": f"test_case_{i}"}
             casos_de_teste.append(teste)
 
 
         repo_name = repositorio.replace(" ", "-") + "-" + str(datetime.datetime.now().strftime('%d-%m-%y-%H-%M-%S.%f'))
         repo_name = unicodedata.normalize('NFKD', repo_name).encode('ASCII', 'ignore').decode('ASCII')
 
-        turma = Turma.objects.last()
-        Questao.objects.create(repo_name=repo_name, enunciado=enunciado, titulo="titulo", casos_de_teste=casos_de_teste, turma=turma)
+        turma = Turma.objects.get(id=request.POST['turma'])
+        print(turma.nome)
+        #Questao.objects.create(repo_name=repo_name, enunciado=enunciado, titulo="titulo", casos_de_teste=casos_de_teste, turma=turma)
 
-        
-        criar_arquivo_de_testes(caso_de_teste=casos_de_teste)
+        """ criar_arquivo_de_testes(caso_de_teste=casos_de_teste)
         criar_readme(enunciado)
-        criar_repositorio(linguagem, repo_name)
+        criar_repositorio(linguagem, repo_name) """
 
         return redirect(settings.BASE_URL + 'atividades/') 
     return render(request, 'index.html')
 
 def mostrar_repositorios(request):
     repositorios = Questao.objects.all()
-    return render(request, "atividades/listagem-repositorios.html", {"repositorios": repositorios})
+    aluno = Aluno.objects.last()
+    #nota = mostrar_resultados_aluno(aluno=aluno)
+    """ context = {
+        "repositorios": repositorios,
+        "repo_aluno": aluno.repo_name,
+        "nota": nota,
+    } """
+
+    context = {
+        "repositorios": repositorios,
+    }
+    return render(request, "atividades/listagem-repositorios.html", context=context)
+
+def mostrar_resultados_aluno(aluno):
+    return aluno.nota
 
 def adicionar_repositorio(request):
     aluno = Aluno.objects.create(repo_name=request.POST['repositorio'], nota=0)
     turma = Turma.objects.last()
     AlunoTurma.objects.create(turma=turma, aluno=aluno)
-    return redirect(settings.BASE_URL + 'atividades/aluno/') 
+    context = {"repo_aluno": aluno.repo_name}
+    return redirect(settings.BASE_URL + 'atividades/aluno/', context) 
+
 
 def pegar_resultados(request):
     aluno = Aluno.objects.last()
@@ -150,6 +167,7 @@ def pegar_resultados(request):
     else:
         print(f"Error: {response.status_code}")
 
+    context = {"repo_aluno": repo_name}
     return redirect(settings.BASE_URL + 'atividades/aluno/') 
 
   

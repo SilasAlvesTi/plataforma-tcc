@@ -1,17 +1,22 @@
 from django.contrib import admin
-from .models import Turma, Questao, Aluno
+from .models import Turma, Questao, Aluno, Professor
 
 
-class TurmaAdmin(admin.ModelAdmin):
+@admin.register(Professor)
+class ProfessorAdmin(admin.ModelAdmin):
     pass
 
+@admin.register(Turma)
+class TurmaAdmin(admin.ModelAdmin):
+    list_display = ('nome',) 
+    fields = ('nome',)
+
+    
+@admin.register(Questao)
 class QuestaoAdmin(admin.ModelAdmin):
     pass
 
+
+@admin.register(Aluno)
 class AlunoAdmin(admin.ModelAdmin):
     pass
-
-
-admin.site.register(Turma, TurmaAdmin)
-admin.site.register(Questao, QuestaoAdmin)
-admin.site.register(Aluno, AlunoAdmin)

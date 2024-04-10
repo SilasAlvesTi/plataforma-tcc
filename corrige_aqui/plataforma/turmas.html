@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha a turma</title>
+</head>
+<body>
+    {% if professor %}
+    <h1>Adicionar Turma</h1>
+    <form method="post" action="{% url 'plataforma:adicionar-turma' %}">
+        {% csrf_token %}
+        <input type="text" name="turma" value="turma">
+        <label for="turma"></label><br>
+        <button type="submit">Enviar</button>
+    </form>
+    
+    <h1>Turmas: </h1>
+    <form method="post" action="{% url 'atividades:index' %}">
+        {% csrf_token %}
+        {% for turma in turmas %}
+            <input type="radio" name="turma" value="{{ turma.id }}">{{ turma.nome }}
+        {% endfor %}
+        <br>
+        <button type="submit">Enviar</button>
+    </form>
+    {% endif %}
+
+    {% if aluno %}
+        <h1>Turmas: </h1>
+        <form method="post" action="{% url 'atividades:mostrar-repositorios' %}">
+            {% csrf_token %}
+            {% for turma in turmas %}
+                <input type="radio" name="turma" value="{{ turma.id }}">{{ turma.nome }}
+            {% endfor %}
+            <br>
+            <button type="submit">Enviar</button>
+        </form>
+    {% endif %}
+</body>
+</html>
