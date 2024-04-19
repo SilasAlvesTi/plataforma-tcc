@@ -13,10 +13,14 @@
     {% endfor %}
     <br>
     <br>
-    <h3>Cole a url do seu repositório.</h4>
-    {% if repo_aluno %}
-        <h3>Você já adicionou o repositório</h3>
-        <a href="{{repo_aluno}}" target="_blank"><h4>{{ repo_aluno }}</h4></a>
+    <h4>Cole a url do seu repositório.</h4>
+    {% if repositorio %}
+        <p>Você já adicionou o repositório: <a href="{{repositorio.repo_name}}" target="_blank">{{repositorio.repo_name}}</a></p>
+        <p>Veja seus resultados: </p>
+        <form method="post" action="{% url 'atividades:pegar-resultados' %}">
+            {% csrf_token %}
+            <button type="submit">Resultados</button>
+        </form>
     {% endif %}
 
     <form method="post" action="{% url 'atividades:adicionar-repositorio' %}">
@@ -25,9 +29,6 @@
         <input type="text" name="repositorio"></input>
         <button type="submit">Enviar</button>
     </form>
-
-    <h1>Resultados:</h1>
-    <h3>Nota: {{ nota }}</h3>
 
 </body>
 </html>

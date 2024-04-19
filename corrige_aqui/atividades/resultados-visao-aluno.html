@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositórios</title>
+</head>
+<body>
+    {% if aluno %}
+        <h1>Resultados para o repositório: <a href="{{aluno.repo_name}}" target="_blank">{{aluno.repo_name}}</a></h1>
+        <h3>Nota: {{aluno.nota}}</h3>
+    {% endif %}
+
+    {% if resultados_testes|length > 0 %}
+        {% for teste, valor in resultados_testes.items %}
+            <h5>O teste {{valor.titulo}} falhou.</h5>
+            <p>O valor esperado era: {{valor.resultado_esperado}}</p>
+            <p>O valor passado foi: {{valor.valor_passado}}</p>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
