@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositórios</title>
+</head>
+<body>
+    <h2>Alunos da turma: {{turma.nome}}</h2>
+    {% if alunos %}
+        {% for aluno in alunos %}
+            <h3>{{aluno.repo_name}}</h3>
+            <h3>{{aluno.nota}}</h3>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

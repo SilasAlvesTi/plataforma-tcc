@@ -10,4 +10,4 @@ def redirecionar_usuario(request):
     if request.method == 'POST':
         if request.POST['usuario'] == "aluno":
             return redirect(settings.BASE_URL + 'atividades/aluno/') 
-        return redirect(settings.BASE_URL + 'atividades/') 
+        return redirect(settings.BASE_URL + 'atividades/adicionar-ou-listar/') 

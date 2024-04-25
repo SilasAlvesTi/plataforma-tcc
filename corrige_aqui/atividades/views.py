@@ -6,8 +6,29 @@ import os, shutil, datetime, unicodedata, re, base64
 import xml.etree.ElementTree as ET
 import requests
 
-def index(response):
-    return render(response, "atividades/index.html", {})
+def index(request):
+    return render(request, "atividades/index.html", {})
+
+
+def adicionar_ou_listar_atividade(request):
+    questao = Questao.objects.last()
+    return render(request, "atividades/adicionar-ou-listar.html", {"questao": questao})
+
+
+def listar_alunos_do_repositorio(request):
+    turma = Turma.objects.last()
+    alunos_turma = AlunoTurma.objects.filter(turma=turma).values_list('aluno', flat=True)
+    alunos = Aluno.objects.filter(pk__in=alunos_turma)
+    questao = Questao.objects.get(turma_id=turma.id)
+
+    context = {
+        "turma": turma,
+        "alunos": alunos,
+        "questao": questao,
+    }
+
+    return render(request, "atividades/listar-alunos-repo.html", context)
+
 
 def criar_arquivo_de_testes(caso_de_teste):
 

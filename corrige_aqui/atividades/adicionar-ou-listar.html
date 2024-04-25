@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositórios</title>
+</head>
+<body>
+    {% if questao %}
+        <h2>Listar Resultados do repositório: </h2>
+        <h3>Resultados para o repositório: 
+        <form action="{% url 'atividades:listar-alunos-do-repositorio' %}" method="post">
+            {% csrf_token %}
+            <p>{{questao.repo_name}}: <button type="submit">Listar alunos</button></p>
+        </form>
+    {% endif %}
+
+    <form method="post" action="{% url 'atividades:index' %}">
+        {% csrf_token %}
+        <button type="submit">Adicionar Nova Atividade</button>
+    </form>
+</body>
+</html>
