@@ -7,12 +7,12 @@ import xml.etree.ElementTree as ET
 import requests
 
 def index(request):
-    return render(request, "atividades/index.html", {})
+    return render(request, "atividades/templates/index.html", {})
 
 
 def adicionar_ou_listar_atividade(request):
     questao = Questao.objects.last()
-    return render(request, "atividades/adicionar-ou-listar.html", {"questao": questao})
+    return render(request, "atividades/templates/adicionar-ou-listar.html", {"questao": questao})
 
 
 def listar_alunos_do_repositorio(request):
@@ -27,7 +27,38 @@ def listar_alunos_do_repositorio(request):
         "questao": questao,
     }
 
-    return render(request, "atividades/listar-alunos-repo.html", context)
+    return render(request, "atividades/templates/listar-alunos-repo.html", context)
+
+
+def logs_aluno(request):
+    aluno_id = request.POST['aluno']
+    aluno = Aluno.objects.get(id=aluno_id)
+
+    repo_name = aluno.repo_name.split("https://github.com/",1)[1]
+
+    response = requests.get(
+        f"https://api.github.com/repos/{repo_name}/commits",
+    )
+
+    response = response.json()
+    numero_de_commits = len(response) - 1
+
+    response_data_from_repository = requests.get(
+        f"https://api.github.com/repos/{repo_name}",
+    )
+    response_data_from_repository = response_data_from_repository.json()
+
+    is_fork = 0
+    if "parent" in response_data_from_repository:
+        is_fork = 1
+
+    context = {
+        "aluno": aluno,
+        "numero_de_commits": numero_de_commits,
+        "is_fork": is_fork
+    }
+
+    return render(request, "atividades/templates/logs-aluno.html", context)
 
 
 def criar_arquivo_de_testes(caso_de_teste):
@@ -103,7 +134,7 @@ def adicionar_atividade(request):
         criar_repositorio(linguagem, repo_name)
 
         return redirect(settings.BASE_URL + 'atividades/') 
-    return render(request, 'index.html')
+    return render(request, 'templates/index.html')
 
 def mostrar_repositorios(request):
     repositorios = Questao.objects.all()
@@ -190,6 +221,6 @@ def pegar_resultados(request):
         "aluno": aluno,
         "resultados_testes": resultados_testes
     }
-    return render(request, 'atividades/resultados-visao-aluno.html', context)
+    return render(request, 'atividades/templates/resultados-visao-aluno.html', context)
 
   

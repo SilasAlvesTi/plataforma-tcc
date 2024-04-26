@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositórios</title>
+</head>
+<body>
+    <h2>Aluno: </h2>
+    {% if aluno %}
+        <h3>Repositório:{{aluno.repo_name}}</h3>
+        <h3>Nota: {{aluno.nota}}</h3>
+    {% endif %}
+
+    {% if numero_de_commits %}
+        <h3>Numero de commits: {{numero_de_commits}}<h3>
+    {% endif %}
+
+    {% if is_fork %}
+        <h3>O repositório foi criado a partir de um fork do fornecido pelo professor<h3>
+    {% endif %}
+
+</body>
+</html>

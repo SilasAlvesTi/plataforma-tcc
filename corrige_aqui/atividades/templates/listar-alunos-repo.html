@@ -11,6 +11,11 @@
         {% for aluno in alunos %}
             <h3>{{aluno.repo_name}}</h3>
             <h3>{{aluno.nota}}</h3>
+            <form action="{% url 'atividades:logs-aluno' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="aluno" value="{{aluno.id}}">
+                <button type="submit">Ver logs individuais</button>
+            </form>
         {% endfor %}
     {% endif %}
 </body>
