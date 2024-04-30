@@ -10,7 +10,7 @@
     {% if alunos %}
         {% for aluno in alunos %}
             <h3>{{aluno.repo_name}}</h3>
-            <h3>{{aluno.nota}}</h3>
+            <h3>Nota do Aluno: {{aluno.nota}}</h3>
             <form action="{% url 'atividades:logs-aluno' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="aluno" value="{{aluno.id}}">

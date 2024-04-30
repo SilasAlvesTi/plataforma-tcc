@@ -19,6 +19,12 @@ class Aluno(models.Model):
     nota = models.IntegerField()
 
 
+class Restultados(models.Model):
+    resultados_incorretos = jsonfield.JSONField(default=dict)
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    questao = models.ForeignKey(Questao, on_delete=models.CASCADE)
+
+
 class AlunoTurma(models.Model):
     turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)

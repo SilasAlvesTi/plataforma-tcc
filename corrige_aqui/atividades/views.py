@@ -1,6 +1,7 @@
+from ast import literal_eval
 from django.shortcuts import render, redirect
 from django.conf import settings
-from .models import Aluno, AlunoTurma, Questao, Turma
+from .models import Aluno, AlunoTurma, Questao, Turma, Restultados
 
 import os, shutil, datetime, unicodedata, re, base64
 import xml.etree.ElementTree as ET
@@ -33,6 +34,12 @@ def listar_alunos_do_repositorio(request):
 def logs_aluno(request):
     aluno_id = request.POST['aluno']
     aluno = Aluno.objects.get(id=aluno_id)
+    resultados_querry = Restultados.objects.filter(aluno_id=aluno.id)
+
+    resultados_incorretos = []
+    for resultados in resultados_querry:
+        resultados_incorretos.append(literal_eval(resultados.resultados_incorretos))
+
 
     repo_name = aluno.repo_name.split("https://github.com/",1)[1]
 
@@ -55,7 +62,8 @@ def logs_aluno(request):
     context = {
         "aluno": aluno,
         "numero_de_commits": numero_de_commits,
-        "is_fork": is_fork
+        "is_fork": is_fork,
+        "resultados_incorretos": resultados_incorretos,
     }
 
     return render(request, "atividades/templates/logs-aluno.html", context)
@@ -136,6 +144,7 @@ def adicionar_atividade(request):
         return redirect(settings.BASE_URL + 'atividades/') 
     return render(request, 'templates/index.html')
 
+
 def mostrar_repositorios(request):
     repositorios = Questao.objects.all()
     repositorio = Aluno.objects.last()
@@ -144,7 +153,8 @@ def mostrar_repositorios(request):
         "repositorios": repositorios,
         "repositorio": repositorio
     }
-    return render(request, "atividades/listagem-repositorios.html", context)
+    return render(request, "atividades/templates/listagem-repositorios.html", context)
+
 
 def adicionar_repositorio(request):
     aluno = Aluno.objects.create(repo_name=request.POST['repositorio'], nota=0)
@@ -152,9 +162,11 @@ def adicionar_repositorio(request):
     AlunoTurma.objects.create(turma=turma, aluno=aluno)
     return redirect(settings.BASE_URL + 'atividades/aluno/') 
 
+
 def pegar_resultados(request):
     aluno = Aluno.objects.last()
     questao = Questao.objects.last()
+    resultados_class = Restultados.objects.filter(aluno_id=aluno.id, questao_id=questao.id)
     casos_de_teste = questao.casos_de_teste
     repo_name = aluno.repo_name
     repo_name = repo_name.split("github.com/", 1)[1]
@@ -213,6 +225,11 @@ def pegar_resultados(request):
 
         if aluno.nota < resultado:
             aluno.nota = resultado
+            if resultados_class == None:
+                Restultados.objects.create(resultados_testes, aluno, questao)
+            else:
+                resultados_class.resultados_incorretos = resultados_testes
+                resultados_class.save()
             aluno.save()
     else:
         print(f"Error: {response.status_code}")
